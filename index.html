@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moving from the Initial Shock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF7; --ink:#2E322C; --ink-soft:#63685F; --line:#EBE8E0; --card:#FFFFFF;
+    --s1:#5E86A6; --s1-bg:#EAF2F7; --s1-soft:#CADEEA;   /* Think   */
+    --s2:#4F9C86; --s2-bg:#E8F4EF; --s2-soft:#C4E4D8;   /* Relate  */
+    --s3:#C09442; --s3-bg:#FBF3E0; --s3-soft:#F0DFB4;   /* Steward */
+    --s4:#C0715A; --s4-bg:#FAEDE7; --s4-soft:#EFCDC0;   /* Act     */
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; line-height:1.62; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 22px 90px;}
+  p{font-size:1.04rem;}
+
+  header.hero{text-align:center; padding:60px 20px 8px;}
+  header.hero .kicker{font-family:'Space Grotesk'; font-size:.74rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--s2); font-weight:600; margin-bottom:16px;}
+  header.hero h1{font-family:'Space Grotesk'; font-weight:700; font-size:2.7rem; line-height:1.08;
+    margin:0 0 14px; letter-spacing:-.6px;}
+  header.hero p.sub{max-width:660px; margin:0 auto; color:var(--ink-soft); font-size:1.1rem;}
+  .think-rel-act{display:inline-flex; gap:8px; margin-top:20px; flex-wrap:wrap; justify-content:center;}
+  .think-rel-act span{font-family:'Space Grotesk'; font-weight:600; font-size:.8rem; letter-spacing:.08em; text-transform:uppercase;
+    background:var(--card); border:1px solid var(--line); padding:7px 15px; border-radius:999px; color:var(--ink-soft);}
+
+  /* arc */
+  .arc{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:30px auto 4px; color:var(--ink-soft); font-size:.82rem;}
+  .arc b{font-family:'Space Grotesk'; color:var(--ink); font-weight:600;}
+  .arc .a1{color:var(--s4);} .arc .a2{color:var(--s2);}
+
+  /* progress rail */
+  .rail{position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin:26px 0 8px;}
+  .rail::before{content:""; position:absolute; top:23px; left:12%; right:12%; height:3px; background:var(--line); border-radius:2px;}
+  .node{position:relative; z-index:1; background:none; border:none; cursor:pointer; font-family:inherit; text-align:center; padding:0 4px;}
+  .node .dot{width:46px; height:46px; border-radius:50%; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk'; font-weight:700; font-size:1.15rem; background:var(--card); border:2px solid var(--line); color:var(--ink-soft); transition:.2s;}
+  .node .cap{font-family:'Space Grotesk'; font-weight:600; font-size:.8rem; color:var(--ink-soft); letter-spacing:.03em; transition:.15s;}
+  .node .tag{display:block; font-size:.68rem; color:#AEB2A6; margin-top:2px; font-family:'Inter'; letter-spacing:.08em; text-transform:uppercase;}
+  .node:hover .dot{transform:translateY(-2px);}
+  .node.active[data-s="1"] .dot, .node.done[data-s="1"] .dot{background:var(--s1); border-color:var(--s1); color:#fff;}
+  .node.active[data-s="2"] .dot, .node.done[data-s="2"] .dot{background:var(--s2); border-color:var(--s2); color:#fff;}
+  .node.active[data-s="3"] .dot, .node.done[data-s="3"] .dot{background:var(--s3); border-color:var(--s3); color:#fff;}
+  .node.active[data-s="4"] .dot, .node.done[data-s="4"] .dot{background:var(--s4); border-color:var(--s4); color:#fff;}
+  .node.active .cap{color:var(--ink);}
+
+  /* panel */
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:32px 30px 30px; margin-top:20px;
+    box-shadow:0 10px 30px rgba(60,60,50,.05); animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+  .panel .step-tag{display:inline-block; font-family:'Space Grotesk'; font-weight:600; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    padding:5px 12px; border-radius:999px; margin-bottom:14px;}
+  .panel h2{font-family:'Space Grotesk'; font-weight:700; font-size:1.9rem; margin:0 0 6px; letter-spacing:-.4px; line-height:1.12;}
+  .panel .pairing{font-size:1rem; color:var(--ink-soft); font-style:italic; margin:0 0 18px;}
+  .panel .core{font-size:1.06rem; margin:0 0 20px;}
+
+  .march{border-radius:14px; padding:18px 20px; margin:0 0 22px;}
+  .march .lbl{font-family:'Space Grotesk'; font-weight:600; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px;}
+  .march p{margin:0; font-size:.98rem;}
+
+  .apply-h{font-family:'Space Grotesk'; font-weight:600; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 12px;}
+  .cards{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+  @media(max-width:720px){.cards{grid-template-columns:1fr;}}
+  .app-card{border:1px solid var(--line); border-radius:14px; padding:15px 16px; background:var(--bg);}
+  .app-card h4{font-family:'Space Grotesk'; font-weight:600; font-size:.98rem; margin:0 0 5px;}
+  .app-card p{font-size:.9rem; color:var(--ink-soft); margin:0;}
+
+  /* accent binding per step */
+  .panel.p1 .step-tag{background:var(--s1-bg); color:var(--s1);} .panel.p1 h2{color:var(--s1);}
+  .panel.p1 .march{background:var(--s1-bg); border:1px solid var(--s1-soft);} .panel.p1 .march .lbl{color:var(--s1);}
+  .panel.p1 .app-card{border-top:3px solid var(--s1);}
+  .panel.p2 .step-tag{background:var(--s2-bg); color:var(--s2);} .panel.p2 h2{color:var(--s2);}
+  .panel.p2 .march{background:var(--s2-bg); border:1px solid var(--s2-soft);} .panel.p2 .march .lbl{color:var(--s2);}
+  .panel.p2 .app-card{border-top:3px solid var(--s2);}
+  .panel.p3 .step-tag{background:var(--s3-bg); color:var(--s3);} .panel.p3 h2{color:var(--s3);}
+  .panel.p3 .march{background:var(--s3-bg); border:1px solid var(--s3-soft);} .panel.p3 .march .lbl{color:var(--s3);}
+  .panel.p3 .app-card{border-top:3px solid var(--s3);}
+  .panel.p4 .step-tag{background:var(--s4-bg); color:var(--s4);} .panel.p4 h2{color:var(--s4);}
+  .panel.p4 .march{background:var(--s4-bg); border:1px solid var(--s4-soft);} .panel.p4 .march .lbl{color:var(--s4);}
+  .panel.p4 .app-card{border-top:3px solid var(--s4);}
+
+  .navbtns{display:flex; justify-content:space-between; align-items:center; margin-top:22px; gap:12px;}
+  .navbtns button{font-family:'Space Grotesk'; font-weight:600; font-size:.95rem; cursor:pointer; border:1px solid var(--line);
+    background:var(--card); color:var(--ink); padding:12px 22px; border-radius:999px; transition:.15s;}
+  .navbtns button:hover:not(:disabled){border-color:var(--s2); color:var(--s2);}
+  .navbtns button:disabled{opacity:.4; cursor:default;}
+  .navbtns .count{font-size:.85rem; color:var(--ink-soft);}
+
+  footer{text-align:center; color:#AEB2A6; font-size:.82rem; margin-top:48px; line-height:1.7;}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="kicker">From the Decolonial Repair project</div>
+  <h1>Moving from the Initial Shock</h1>
+  <p class="sub">From the shock of uncovering a profound historical gap to a life of active, ethical accountability — a fundamental shift in how you think, relate, and act.</p>
+  <div class="think-rel-act"><span>Think</span><span>Relate</span><span>Steward</span><span>Act</span></div>
+</header>
+
+<div class="wrap">
+  <div class="arc"><b class="a1">The shock</b> <span>→</span> Think <span>→</span> Relate <span>→</span> Steward <span>→</span> Act <span>→</span> <b class="a2">accountability</b></div>
+
+  <div class="rail" id="rail"></div>
+
+  <div id="panelHost"></div>
+
+  <div class="navbtns">
+    <button id="prev">← Back</button>
+    <span class="count" id="count"></span>
+    <button id="next">Next step →</button>
+  </div>
+
+  <footer>
+    Moving from the Initial Shock · Understanding Your Next Steps<br>
+    From the Decolonial Repair project · Jeff Kisling
+  </footer>
+</div>
+
+<script>
+const STEPS=[
+  {
+    n:1, cls:"p1", cap:"Differentiate", tag:"Think",
+    title:"Differentiate the Gaps",
+    pairing:"Intellectual ignorance vs. relational rupture",
+    core:"When you first realize how much of the truth did not reach you, the instinct is to reach for a book, a seminar, a new curriculum. Study is necessary — but treating a relational rupture as a mere information deficit is a category error. Missing knowledge is a pedagogical omission, correctable by reading. Withheld knowledge is absent by design: the deliberate construction of social, geographic, and economic boundaries built to insulate dominant communities from the consequences of their privilege. Solve a withholding with a reading list and you stay comfortable and isolated — trying to know a community without ever being known by it.",
+    mlbl:"The mirror",
+    march:"Just as Scattergood Friends School was deeply educated on anti-war witness yet entirely insulated from the Meskwaki nation on whose treaty land it sat, look for where your own progressive spaces stay geographically and relationally segregated.",
+    apply:[
+      {h:"Map your isolation", p:"Whose physical presence is missing from your daily life, school, or meeting?"},
+      {h:"Honor Native stewardship of truth", p:"These histories were never lost — they've been carried by descendant communities. The gap is in your relationships, not the record."},
+      {h:"Shift the goal", p:"Move from “learning about” to building the capacity to receive."}
+    ]
+  },
+  {
+    n:2, cls:"p2", cap:"Proximity", tag:"Relate",
+    title:"Seek Proximity, Not Just Information",
+    pairing:"Embodying shared struggle",
+    core:"To receive withheld truth you must cross the physical and social boundaries that have kept you insulated. That means placing your body in spaces of shared struggle where you are not in control, not setting the agenda, and not acting as the expert. Genuine solidarity requires doing literal, physical labor under the explicit direction of Indigenous organizers — where your credentials, theories, and institutional power are irrelevant.",
+    mlbl:"From the 2018 Climate Unity March",
+    march:"The marchers did not learn about pipeline impacts or treaty rights from a lecture hall. They walked 94 miles through 90-degree heat, heavy rain, and mud. That shared exhaustion stripped away academic defenses, so they could hear Matthew Lone Bear share his mother's residential-school trauma, and Donnielle Wanatee pray over the buried steel of the pipeline — in a way that permanently shifted their understanding.",
+    apply:[
+      {h:"Embodied proximity", p:"Show up in person for Indigenous-led work — clear debris, dig soil, plant crops, as with the Great Plains Action Society."},
+      {h:"Relinquish control", p:"Don't optimize the work, don't lead, don't make the space about your emotions. Carry water, move dirt, listen."},
+      {h:"Accept the sacred-journey framework", p:"Shift from transactional politics to a long-term journey of relationship, guided by nonviolence and respect for the land."}
+    ]
+  },
+  {
+    n:3, cls:"p3", cap:"Posture", tag:"Steward",
+    title:"Audit Your Posture",
+    pairing:"The ethical stewardship of sacred stories",
+    core:"As relationships form, people will trust you with their stories, their historical pain, and their present struggles. Guard against the extractive settler mindset that treats other people's narratives as natural resources to be harvested, analyzed, and published for your own moral or professional advancement. Stories shared in proximity are a sacred trust — not raw material for your blog, book, sermon, or paper.",
+    mlbl:"A hard lesson, 2019 reunion",
+    march:"At the marchers' reunion, Foxy Onefeather confronted allies over the shock of seeing her deeply personal oral histories written down for publication without consultation — a repeat of the harm done by schools like Quaker Tunesassa, which stripped Seneca children of their names and replaced them with the surnames of prominent Quaker families.",
+    apply:[
+      {h:"Establish a protocol of consent", p:"A story shared in a circle is not permission to repeat it. Submit any writing to the storyteller first for review."},
+      {h:"Prioritize the storyteller's authority", p:"If they ask you to delete a section, omit a name, or change a description, comply immediately, without defensiveness."},
+      {h:"De-center your guilt", p:"Progressive guilt often wants to be seen as “one of the good ones.” Sit with correction without asking the marginalized person to comfort you."}
+    ]
+  },
+  {
+    n:4, cls:"p4", cap:"Material action", tag:"Act",
+    title:"Move to Material Action",
+    pairing:"Relinquishing wealth and power",
+    core:"Expressions of empathy, symbolic land acknowledgments, and statements of progressive regret are costless gestures that keep dominant institutions comfortable while preserving their wealth and security. The endpoint of discovering what did not reach you is material repair — the tangible redirection of resources, land, and political power under Indigenous sovereignty. A belief in your own good intentions can actively blind you: Quaker administrators ran roughly thirty schools that stripped children of hair, clothes, language, and names, all while believing they were doing God's work. Material repair means moving past the illusion of innocence.",
+    mlbl:"What repair looks like",
+    march:"As the 2018 marchers lobbied federal representatives to support Savanna's Act and the SURVIVE Act, and as the Iowa Conservative Friends redirected their peace-and-justice budget to fund “They Found Us” — a documentary exposing the residential schools their own denomination ran — use your capital to follow, not to lead.",
+    apply:[
+      {h:"Utilize political capital", p:"Amplify the legislative priorities Indigenous organizers name; leverage your institutional connections behind them."},
+      {h:"Redirect institutional budgets", p:"Move past symbolic donations. Fund projects that expose historical harms or build Indigenous autonomy."},
+      {h:"Direct mutual aid", p:"Set up recurring, no-strings support to Indigenous-led mutual aid and urban farming — given free of settler oversight."}
+    ]
+  }
+];
+
+let cur=0;
+const rail=document.getElementById('rail');
+STEPS.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='node'; b.dataset.s=s.n;
+  b.innerHTML='<div class="dot">'+s.n+'</div><div class="cap">'+s.cap+'<span class="tag">'+s.tag+'</span></div>';
+  b.onclick=()=>{cur=i; render();};
+  rail.appendChild(b);
+});
+
+const host=document.getElementById('panelHost');
+function render(){
+  const s=STEPS[cur];
+  document.querySelectorAll('.node').forEach((n,i)=>{
+    n.classList.toggle('active', i===cur);
+    n.classList.toggle('done', i<cur);
+  });
+  host.innerHTML=
+    '<div class="panel '+s.cls+'">'+
+      '<span class="step-tag">Step '+s.n+' · '+s.tag+'</span>'+
+      '<h2>'+s.title+'</h2>'+
+      '<p class="pairing">'+s.pairing+'</p>'+
+      '<p class="core">'+s.core+'</p>'+
+      '<div class="march"><div class="lbl">'+s.mlbl+'</div><p>'+s.march+'</p></div>'+
+      '<p class="apply-h">How to apply this</p>'+
+      '<div class="cards">'+s.apply.map(a=>'<div class="app-card"><h4>'+a.h+'</h4><p>'+a.p+'</p></div>').join('')+'</div>'+
+    '</div>';
+  document.getElementById('prev').disabled = cur===0;
+  document.getElementById('next').disabled = cur===STEPS.length-1;
+  document.getElementById('next').textContent = cur===STEPS.length-1 ? 'Complete' : 'Next step →';
+  document.getElementById('count').textContent = 'Step '+(cur+1)+' of '+STEPS.length;
+  host.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+document.getElementById('prev').onclick=()=>{ if(cur>0){cur--; render();} };
+document.getElementById('next').onclick=()=>{ if(cur<STEPS.length-1){cur++; render();} };
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight' && cur<STEPS.length-1){cur++; render();}
+  if(e.key==='ArrowLeft' && cur>0){cur--; render();}
+});
+render();
+</script>
+</body>
+</html>
